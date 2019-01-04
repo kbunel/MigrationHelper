@@ -6,17 +6,17 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use MigrationHelperSF4\Manager\MigrationService;
+use MigrationHelperSF4\Services\MigrationHelperSF4;
 
 class MigrationHelperSF4Command extends ContainerAwareCommand
 {
     protected static $defaultName = 'kbunel:migrate:sf4';
 
-    private $migrationService;
+    private $migrationHelperSF4;
 
-    public function __construct(MigrationService $migrationService)
+    public function __construct(MigrationHelperSF4 $migrationHelperSF4)
     {
-        $this->migrationService = $migrationService;
+        $this->migrationHelperSF4 = $migrationHelperSF4;
 
         parent::__construct();
     }
@@ -32,7 +32,7 @@ class MigrationHelperSF4Command extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->migrationService->migrate($input->getArgument('path') ?? 'src');
+        $this->migrationHelperSF4->migrate($input->getArgument('path') ?? 'src');
     }
 }
 

@@ -9,13 +9,10 @@ services:
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
 
-    MigrationHelper\:
+    MigrationHelperSF4\:
         resource: '../../*'
         exclude: '../../{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
 
-    MigrationHelperSF4\Command\MigrationHelperCommand:
+    MigrationHelperSF4\Command\MigrationHelperSF4Command:
         tags:
             - { name: 'console.command', command: 'kbunel:migrate:sf4' }
-
-    config_manager:
-        alias: MigrationHelperSF4\Manager\ConfigManager

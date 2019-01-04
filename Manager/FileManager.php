@@ -19,7 +19,7 @@ class FileManager
     private const ARCHITECTURE_PATH = __DIR__ . '/../Resources/config/architecture.yaml';
 
     private const INDEX_PATH        = __DIR__ . '/../Resources/files/index.php.txt';
-    private const CONSOLE_PATH      = __DIR__ . '/../Resources/files/console.txt';
+    private const CONSOLE_PATH      = __DIR__ . '/../Resources/files/console.php.txt';
 
     private $architecture;
     private $logger;

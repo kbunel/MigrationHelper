@@ -12,12 +12,12 @@ class MigrationHelperSF4Extension extends Extension
     public function load(array $configs, ContainerBuilder $container)
     {
 		$loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-		$loader->load('services.yaml');
+        $loader->load('services.yaml');
 
 		$configuration = new Configuration();
-		$config = $this->processConfiguration($configuration, $configs);
+        $config = $this->processConfiguration($configuration, $configs);
 
-        $configManagerDefinition = $container->getDefinition('config_manager');
+        $configManagerDefinition = $container->getDefinition('MigrationHelperSF4\Manager\ConfigManager');
         $configManagerDefinition->setArgument('$projectName', $config['project_name']);
     }
 }

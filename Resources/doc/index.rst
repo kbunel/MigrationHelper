@@ -8,7 +8,7 @@ Open a command console, enter your project directory and execute:
 
 .. code-block:: bash
 
-    $ composer require kbunel/MigrationHelper
+    $ composer require kbunel/migration-helper-sf4
 
 Applications that don't use Symfony Flex
 ----------------------------------------
@@ -21,7 +21,7 @@ following command to download the latest stable version of this bundle:
 
 .. code-block:: terminal
 
-    $ composer require kbunel/MigrationHelper
+    $ composer require kbunel/migration-helper-sf4
 
 This command requires you to have Composer installed globally, as explained
 in the `installation chapter`_ of the Composer documentation.

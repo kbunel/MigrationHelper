@@ -1,6 +1,6 @@
 <?php
 
-namespace MigrationHelperSF4\Manager;
+namespace MigrationHelperSF4\Services;
 
 use MigrationHelperSF4\Manager\FileAnalyzer;
 use MigrationHelperSF4\Manager\FileManager;

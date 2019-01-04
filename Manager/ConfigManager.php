@@ -18,7 +18,7 @@ class ConfigManager
 
     private const ROUTING_FILE_PATH = 'app/config/routing.yml';
     private const CONFIG_FILE       = 'app/config/config.yml';
-    private const BUNDLES_TPL_PATH  = __DIR__ . '/../Resources/views/skeleton/bundles.tpl.php';
+    private const BUNDLES_TPL_PATH  = __DIR__ . '/../Resources/views/skeleton/bundle.tpl.php';
     private const BUNDLE_PATH       = 'config/bundles.php';
 
     public function __construct(FileManager $fileManager, Logger $logger, Tools $tools, string $projectName)

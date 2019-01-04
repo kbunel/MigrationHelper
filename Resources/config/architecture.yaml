@@ -1,0 +1,44 @@
+entity: src/Entity
+controller: src/Controller
+form.type: src/Form/Type
+compiler: src/DependencyInjection/Compiler
+repository: src/Repository
+validator.constraint_validator: src/Validator/Constraints
+validator.constraint: src/Validator/Constraints
+service: src/Service
+voter: src/Security
+security.user_provider: src/Security
+security.simple_pre_authenticator: src/Security/Authentication
+web_test_case: tests
+entity_manager: src/Service
+serializer_context: src/Serializer
+jms_serializer.subscribing_handler: src/Serializer/Handler
+jms_serializer.event_subscriber: src/Serializer/Subscriber
+jms.exclusion_strategy: src/Serializer/Exclusion
+public: public
+sensio_doctrine_param_converter: src/Request/ParamConverter
+trait: src/Model
+interface: src/Model
+doctrine_paginator: src/Model
+data_transformer: src/Form/DataTransformer
+sql_filter: src/Filters
+twig_extension: src/Twig
+exception: src/Exception
+event: src/Event
+doctrine_node: src/DQL
+command: src/Command
+doctrine.event_listener: src/EventListener
+doctrine.event_subscriber: src/EventSubscriber
+doctrine.orm.entity_listener: src/EventListener
+kernel.event_listener: src/EventListener
+kernel.event_subscriber: src/EventSubscriber
+routing: app/config/routes
+
+bundle:
+dependency_injection.extension:
+dependency_injection.configuration:
+test_case:
+hidden_file:
+yaml:
+twig:
+xml:

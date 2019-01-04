@@ -1,0 +1,30 @@
+{
+    "name": "kbunel/migration-helper-sf4",
+	"type": "symfony-bundle",
+    "description": "This bundle is curretly in development",
+    "keywords": [ "migration", "architecture", "sf4", "Symfony", "Symfony 4" ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Kevin Bunel",
+            "email": "kevinbunel@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "MigrationHelperSF4\\": "./"
+        }
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.0-dev"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.5"
+    }
+}

@@ -4,10 +4,10 @@ namespace MigrationHelperSF4\Manager;
 
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Filesystem\Filesystem;
-use MigrationHelperSF4\Manager\FileAnalyzer;
-use MigrationHelperSF4\Manager\Logger;
-use MigrationHelperSF4\Manager\Tools;
-use MigrationHelperSF4\Model\FileAnalyzed;
+use FileAnalyzer\Services\FileAnalyzer;
+use FileAnalyzer\Services\Logger;
+use FileAnalyzer\Services\Tools;
+use FileAnalyzer\Model\FileAnalyzed;
 
 class FileManager
 {

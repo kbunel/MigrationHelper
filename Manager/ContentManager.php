@@ -2,12 +2,12 @@
 
 namespace MigrationHelperSF4\Manager;
 
-use MigrationHelperSF4\Model\FileAnalyzed;
-use MigrationHelperSF4\Manager\Tools;
-use MigrationHelperSF4\Manager\FileManager;
-use MigrationHelperSF4\Manager\Logger;
 use Symfony\Component\Yaml\Yaml;
-use MigrationHelperSF4\Manager\FileAnalyzer;
+use FileAnalyzer\Services\FileAnalyzer;
+use FileAnalyzer\Model\FileAnalyzed;
+use FileAnalyzer\Services\Tools;
+use FileAnalyzer\Services\Logger;
+use MigrationHelperSF4\Manager\FileManager;
 
 class ContentManager
 {

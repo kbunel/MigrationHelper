@@ -2,13 +2,13 @@
 
 namespace MigrationHelperSF4\Services;
 
-use MigrationHelperSF4\Manager\FileAnalyzer;
+use FileAnalyzer\Services\FileAnalyzer;
+use FileAnalyzer\Services\Tools;
+use FileAnalyzer\Services\Logger;
+use FileAnalyzer\Model\FileAnalyzed;
 use MigrationHelperSF4\Manager\FileManager;
 use MigrationHelperSF4\Manager\ContentManager;
-use MigrationHelperSF4\Manager\Tools;
-use MigrationHelperSF4\Manager\Logger;
 use MigrationHelperSF4\Manager\ConfigManager;
-use MigrationHelperSF4\Model\FileAnalyzed;
 
 class MigrationHelperSF4
 {

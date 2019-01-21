@@ -11,13 +11,20 @@
         }
     ],
     "require": {
-        "php": ">=7.1.0"
+        "php": ">=7.1.0",
+        "kbunel/file-analyzer": "dev-master"
     },
     "autoload": {
         "psr-4": {
             "MigrationHelperSF4\\": "./"
         }
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "/Users/kbo/Documents/Projects/FileAnalyzer"
+        }
+    ],
     "minimum-stability": "dev",
     "extra": {
         "branch-alias": {

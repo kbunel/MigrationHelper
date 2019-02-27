@@ -6,7 +6,8 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use MigrationHelperSF4\Services\MigrationHelperSF4;
+use MigrationHelperSF4\Manager\ConfigManager;
+use FileAnalyzer\Services\FileAnalyzer;
 
 class ServicesFromXMLToYamlCommand extends ContainerAwareCommand
 {

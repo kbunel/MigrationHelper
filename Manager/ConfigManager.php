@@ -183,7 +183,13 @@ class ConfigManager
     private function getServicesFromXmlFiles(array $xmlFiles): array
     {
         $servicesToAdd = [];
-        $configServices = Yaml::parseFile(self::CONFIG_FILE)['services'];
+        $configServices = Yaml::parseFile(self::CONFIG_FILE);
+
+        if (!isset($configServices['services'])) {
+            return [];
+        }
+
+        $configServices = $configServices['services'];
 
         foreach ($xmlFiles as $xmlFile) {
             $this->logger->advanceProgressBar();

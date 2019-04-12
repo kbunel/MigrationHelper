@@ -4,6 +4,7 @@ namespace MigrationHelperSF4\Manager;
 
 use Symfony\Component\Yaml\Yaml;
 use FileAnalyzer\Services\FileAnalyzer;
+use FileAnalyzer\Analyzer\ServiceAnalyzer;
 use FileAnalyzer\Services\Tools;
 use FileAnalyzer\Services\Logger;
 use MigrationHelperSF4\Manager\FileManager;
@@ -12,6 +13,7 @@ use MigrationHelperSF4\Model\FileAnalyzed;
 class ConfigManager
 {
     private $fileManager;
+    private $serviceAnalyzer;
     private $projectName;
     private $logger;
     private $tools;
@@ -21,10 +23,11 @@ class ConfigManager
     private const BUNDLES_TPL_PATH  = __DIR__ . '/../Resources/views/skeleton/bundle.tpl.php';
     private const BUNDLE_PATH       = 'config/bundles.php';
 
-    public function __construct(FileManager $fileManager, Logger $logger, Tools $tools, string $projectName)
+    public function __construct(FileManager $fileManager, Logger $logger, Tools $tools, ServiceAnalyzer $serviceAnalyzer, string $projectName)
     {
         $this->projectName = $projectName; // eg: Acme\UserBundle\... -> Project name = Acme
         $this->fileManager = $fileManager;
+        $this->serviceAnalyzer = $serviceAnalyzer;
         $this->logger = $logger;
         $this->tools = $tools;
     }
@@ -82,13 +85,15 @@ class ConfigManager
     {
         $xmlFiles = $this->tools->getKind($files, fileAnalyzer::FILE_KIND_XML);
 
-        $this->logger->writeln('<info>updating services in config from services.xml files</info>');
-        $this->logger->startProgressBar(count($xmlFiles));
+        $this->logger->writeln('<info>Updating services in config from services.xml files</info>');
 
-        $servicesToAdd = $this->getServicesFromXmlFiles($xmlFiles);
-        $this->addServicesToConfig($servicesToAdd);
+        $servicesToAdd = $this->getServicesNotInYmlFromXmlFiles($xmlFiles);
 
-        $this->logger->finishProgressBar();
+        $this->logger->writeln('<info>Found ' . count($servicesToAdd) . ' to add</info>');
+
+        if (count($servicesToAdd)) {
+            $this->addServicesToConfig($servicesToAdd);
+        }
     }
 
     /**
@@ -180,17 +185,20 @@ class ConfigManager
     /**
      * @param FileAnalyzed[]
      */
-    private function getServicesFromXmlFiles(array $xmlFiles): array
+    private function getServicesNotInYmlFromXmlFiles(array $xmlFiles): array
     {
-        $servicesToAdd = [];
-        $configServices = Yaml::parseFile(self::CONFIG_FILE);
-
-        if (!isset($configServices['services'])) {
-            return [];
+        $servicesFilesPaths = $this->serviceAnalyzer->getServicesFilesPaths();
+        $configServices = [];
+        foreach ($servicesFilesPaths as $path) {
+            $content = Yaml::parseFile($path);
+            if (isset($content['services'])) {
+                $configServices = array_merge($configServices, $content['services']);
+            }
         }
 
-        $configServices = $configServices['services'];
+        $this->logger->startProgressBar(count($xmlFiles));
 
+        $servicesToAdd = [];
         foreach ($xmlFiles as $xmlFile) {
             $this->logger->advanceProgressBar();
 
@@ -212,7 +220,7 @@ class ConfigManager
                 }
 
                 foreach ($service->argument as $argument) {
-                    if ($argument->attributes()['type']->__toString() != 'service') {
+                    if (!isset($argument->attributes()['type']) || $argument->attributes()['type']->__toString() != 'service') {
                         $servicesToAdd[$class]['arguments'][] = [
                             'type' => $argument->attributes()->__toString(),
                             'value' => $argument[0]->__toString(),
@@ -233,6 +241,8 @@ class ConfigManager
             }
         }
 
+        $this->logger->finishProgressBar();
+
         return $servicesToAdd;
     }
 
@@ -244,53 +254,71 @@ class ConfigManager
             return;
         }
 
-        $this->addServicesToAddInConfig($servicesToAddLines);
+        $this->addServicesInConfig($servicesToAddLines);
     }
 
-    private function addServicesToAddInConfig(array $servicesToAdd): void
+    private function addServicesInConfig(array $servicesToAdd): void
     {
-        $lines = file(self::CONFIG_FILE);
+        $servicesFilePath = $this->serviceAnalyzer->getServicesFilesPaths()[0];
+        $lines = file($servicesFilePath);
+
         $inServices = false;
+        $inserted = false;
         foreach ($lines as $key => $line) {
             if (!$inServices && preg_match ('/^services:/', trim($line))) {
                 $inServices = true;
+
+                continue;
             }
 
             if (!$inServices) {
                 continue;
             }
 
-            if (isset($lines[$key + 1]) && preg_match('/^[a-zA-Z]/', $lines[$key + 1])) {
-                array_splice($lines, $key + 1, 0, $servicesToAdd);
+            if (preg_match('/^[a-zA-Z]/', $line)) {
+                array_splice($lines, $key, 0, $servicesToAdd);
+                $inserted = true;
 
                 break;
             }
         }
 
-        $this->fileManager->write(self::CONFIG_FILE, implode($lines));
+        if (!$inserted) {
+            $lines[] = "\n";
+            $lines = array_merge($lines, $servicesToAdd);
+        }
+
+        if ($lines[count($lines) - 1] == "\n") {
+            unset($lines[count($lines) - 1]);
+        }
+
+        $this->fileManager->write($servicesFilePath, implode($lines));
     }
 
     private function getServicesFormatedToBeInjected(array $servicesToAdd): array
     {
         $lines = [];
+        $indent = $this->getIndentInConfig();
         foreach ($servicesToAdd as $key => $service) {
-            $lines[] = $this->left(4) . $key . ":\n";
+            $lines[] = $this->left($indent) . $key . ":\n";
             if (isset($service['arguments'])) {
-                $lines[] = $this->left(8) . "arguments:\n";
+                $lines[] = $this->left($indent * 2) . "arguments:\n";
                 foreach ($service['arguments'] as $argument) {
                     if ($argument['type'] == 'expression') {
-                        $lines[] = $this->left(12) . "- \"@=" . $argument['value'] . "\"\n";
+                        $lines[] = $this->left($indent * 3) . "- \"@=" . $argument['value'] . "\"\n";
                     } else {
-                        $lines[] = $this->left(12) . "- \"" . $argument['value'] . "\"\n";
+                        $lines[] = $this->left($indent * 3) . "- \"" . $argument['value'] . "\"\n";
                     }
                 }
             }
             if (isset($service['tag'])) {
-                $lines[] = $this->left(8) . "tags:\n";
+                $lines[] = $this->left($indent * 2) . "tags:\n";
                 foreach ($service['tag'] as $tag) {
-                    $l = $this->left(12) . "- { ";
+                    $l = $this->left($indent * 3) . "- { ";
+                    $x = 0;
+                    $nbAttributes = count($tag);
                     foreach ($tag as $attribute => $value) {
-                        $l .= $attribute . ': ' . $value . ' ';
+                        $l .= $attribute . ': ' . $value . (($x++ < $nbAttributes - 1) ? ', ' : ' ');
                     }
                     $l .= "}\n";
                 }
@@ -300,6 +328,34 @@ class ConfigManager
         }
 
         return $lines;
+    }
+
+    private function getIndentInConfig(): int
+    {
+        $lines = file($this->serviceAnalyzer->getServicesFilesPaths()[0]);
+
+        $inServices = false;
+        $indent = 0;
+        foreach ($lines as $key => $line) {
+            if (!$inServices && preg_match ('/^services:/', trim($line))) {
+                $inServices = true;
+
+                continue;
+            }
+
+            if (!$inServices) {
+                continue;
+            }
+
+            if (preg_match('/[a-zA-Z]/', $line, $matches)) {
+                $x = 0;
+                while ($line[$x++] == ' ') {
+                    $indent++;
+                }
+
+                return $indent;
+            }
+        }
     }
 
     private function left(int $spaces): string

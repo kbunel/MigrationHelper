@@ -3,9 +3,10 @@
 namespace MigrationHelperSF4\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use MigrationHelperSF4\Manager\ConfigManager;
 use FileAnalyzer\Services\FileAnalyzer;
 
@@ -35,9 +36,13 @@ class ServicesFromXMLToYamlCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $io = new SymfonyStyle($input, $output);
+
         $files = $this->fileAnalyzer->analyze($input->getArgument('path') ?? 'src');
 
         $this->configManager->addXmlServicesToYamlConfig($files);
+
+        $io->success('DONE!');
     }
 }
 

@@ -1,4 +1,4 @@
-This bundle is in development and is currently not operational
+This project is not maintained anymore
 
 This bundle helps your application to migrate from sf3 architecture to sf4 architecture, it will parse all the files to check the kind and move it to the right place. It will update the services according. This bundle is an helper it does not ensure the application to work after and it is probable you'll have to fix some very custom thins.
 

@@ -1,7 +1,7 @@
 {
     "name": "kbunel/migration-helper-sf4",
     "type": "symfony-bundle",
-    "description": "This bundle helps migrating yyour application by moving all files in yyour application in a restructeured architectured from SF3 to SF4",
+    "description": "This bundle helps you migrating your application by moving all files in your application in a restructured architecture from SF3 to SF4",
     "keywords": [ "migration", "architecture", "sf4", "Symfony", "Symfony 4" ],
     "license": "MIT",
     "authors": [
